@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tarefas</title>
+    <style>
+        #task-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .task-item.completed {
+            text-decoration: line-through;
+            color: grey;
+        }
+
+        .task-item button {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Lista de Tarefas</h1>
+    <input type="text" id="task-input" placeholder="Adicionar nova tarefa">
+    <button id="add-task-btn">Adicionar</button>
+    <ul id="task-list"></ul>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const taskInput = document.getElementById('task-input');
+            const addTaskBtn = document.getElementById('add-task-btn');
+            const taskList = document.getElementById('task-list');
+
+            // Função para adicionar uma nova tarefa
+            function addTask(taskText) {
+                const taskItem = document.createElement('li');
+                taskItem.classList.add('task-item');
+                taskItem.innerHTML = `
+                    <input type="checkbox">
+                    <span>${taskText}</span>
+                    <button class="remove-task-btn">Remover</button>
+                `;
+                taskList.appendChild(taskItem);
+                updateLocalStorage();
+                taskInput.value = ''; // Limpar o campo de entrada após adicionar a tarefa
+            }
+
+            // Função para remover uma tarefa
+            function removeTask(taskItem) {
+                taskItem.remove();
+                updateLocalStorage();
+            }
+
+            // Função para atualizar o localStorage com a lista de tarefas
+            function updateLocalStorage() {
+                const tasks = [];
+                document.querySelectorAll('.task-item').forEach(taskItem => {
+                    tasks.push({
+                        text: taskItem.querySelector('span').textContent,
+                        completed: taskItem.querySelector('input[type="checkbox"]').checked
+                    });
+                });
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+            }
+
+            // Evento de clique para adicionar uma nova tarefa
+            addTaskBtn.addEventListener('click', function () {
+                const taskText = taskInput.value.trim();
+                if (taskText !== '') {
+                    addTask(taskText);
+                }
+            });
+
+            // Evento de pressionar Enter no campo de entrada para adicionar uma nova tarefa
+            taskInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    const taskText = taskInput.value.trim();
+                    if (taskText !== '') {
+                        addTask(taskText);
+                    }
+                }
+            });
+
+            // Evento de clique para remover uma tarefa
+            taskList.addEventListener('click', function (e) {
+                if (e.target.classList.contains('remove-task-btn')) {
+                    const taskItem = e.target.closest('.task-item');
+                    removeTask(taskItem);
+                }
+            });
+
+            // Carregar tarefas do localStorage ao carregar a página
+            document.addEventListener('DOMContentLoaded', function () {
+                const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+                tasks.forEach(task => {
+                    addTask(task.text);
+                    const taskItem = taskList.lastElementChild;
+                    taskItem.querySelector('input[type="checkbox"]').checked = task.completed;
+                    if (task.completed) {
+                        taskItem.classList.add('completed');
+                    }
+                });
+            });
+
+            // Evento de clique para marcar uma tarefa como concluída
+            taskList.addEventListener('change', function (e) {
+                if (e.target.matches('input[type="checkbox"]')) {
+                    const taskItem = e.target.closest('.task-item');
+                    taskItem.classList.toggle('completed');
+                    updateLocalStorage();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
