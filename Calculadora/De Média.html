@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Média</title>
+</head>
+<body>
+    <script>
+        // Solicita ao usuário que insira suas três notas
+        let nota1 = prompt("Insira a primeira nota:");
+        let nota2 = prompt("Insira a segunda nota:");
+        let nota3 = prompt("Insira a terceira nota:");
+
+        // Converte as entradas do usuário em números
+        nota1 = parseFloat(nota1);
+        nota2 = parseFloat(nota2);
+        nota3 = parseFloat(nota3);
+
+        // Verifica se as entradas do usuário são números válidos
+        if (isNaN(nota1) || isNaN(nota2) || isNaN(nota3)) {
+            alert("Por favor, insira apenas números válidos.");
+        } else {
+            // Calcula a média das três notas
+            let media = (nota1 + nota2 + nota3) / 3;
+
+            // Exibe a média para o usuário usando um alerta
+            alert("A média das notas é: " + media.toFixed(2));
+        }
+    </script>
+</body>
+</html>
